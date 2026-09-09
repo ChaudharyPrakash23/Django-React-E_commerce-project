@@ -26,7 +26,18 @@ function ProductList() {
       });
   }, []);
   if (loading) {
-    return <div>Loading....</div>;
+    return (
+      <div className="flex justify-center items-center min-h-[60vh]">
+        <div className="flex items-center text-lg font-medium text-gray-600">
+          Loading
+          <span className="ml-1 flex gap-1">
+            <span className="w-1.5 h-1.5 bg-gray-600 rounded-full animate-bounce"></span>
+            <span className="w-1.5 h-1.5 bg-gray-600 rounded-full animate-bounce [animation-delay:150ms]"></span>
+            <span className="w-1.5 h-1.5 bg-gray-600 rounded-full animate-bounce [animation-delay:300ms]"></span>
+          </span>
+        </div>
+      </div>
+    );
   }
   if (error) {
     return <div>Error:{error}</div>;
@@ -50,4 +61,4 @@ function ProductList() {
     </div>
   );
 }
-export default ProductList
+export default ProductList;
