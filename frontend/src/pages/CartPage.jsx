@@ -1,12 +1,8 @@
 import { useCart } from "../context/CardContext";
 
 function CartPage() {
-  const { cartItems, removeFromCart, updateQuantity } = useCart();
-
-  const total = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0,
-  );
+  const { cartItems, total, removeFromCart, updateQuantity } = useCart();
+  const BASEURL = import.meta.env.VITE_DJANGO_BASE_URL;
 
   return (
     <div className="pt-20 min-h-screen bg-grey-100 p-8">
@@ -14,12 +10,21 @@ function CartPage() {
       {cartItems.length === 0 ? (
         <p className="text-center text-grey-600">Your cart is empty</p>
       ) : (
-        <div className="max-w-4xl mx-auto bg-white p=6 rounded-lg shadow-md">
+        <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
           {cartItems.map((item) => (
-            <div className="flex item-center justify-between mb-4">
+            <div key={item.id} className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-4 ">
+                {item.product_image && (
+                  <img
+                    src={`${BASEURL}${item.product_image}`}
+                    alt={item.product_name}
+                    className="w-20 h-20 object-cover rounded"
+                  />
+                )}
+              </div>
               <div>
-                <h2 className="text-lg font-semibold ">{item.name}</h2>
-                <p className="text-grey-600 ">Rs:{item.price}</p>
+                <h2 className="text-lg font-semibold ">{item.product_name}</h2>
+                <p className="text-grey-600 ">Rs:{item.product_price}</p>
               </div>
               <div className="flex items-center gap-3">
                 <button

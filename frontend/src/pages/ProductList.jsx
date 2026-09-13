@@ -9,7 +9,7 @@ function ProductList() {
   const BASEURL = import.meta.env.VITE_DJANGO_BASE_URL;
 
   useEffect(() => {
-    fetch(`${BASEURL}/api/products`)
+    fetch(`${BASEURL}/api/products/`)
       .then((response) => {
         if (!response.ok) {
           throw new Error("failed to fetch Products!");
@@ -24,7 +24,7 @@ function ProductList() {
         setError(error.message);
         setLoading(false);
       });
-  }, []);
+  }, [BASEURL]);
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
