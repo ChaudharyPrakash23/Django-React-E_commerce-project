@@ -16,7 +16,7 @@ export const CartProvider = ({ children }) => {
             throw new Error("failed to fetch cart")
         }
         const data=await res.json();
-        setCartItems(data.item || [])
+        setCartItems(data.items || [])
         setTotal(data.total || 0)
       }catch(error){
         console.error("Error fetching cart",error);
@@ -29,12 +29,12 @@ export const CartProvider = ({ children }) => {
     // Add Product to cart
     const addToCart =async (product) => {
         try{
-            await fetch(`${BASEURL}/api/cart/add`,{
+            await fetch(`${BASEURL}/api/cart/add/`,{
                 method:'POST',
                 headers:{
-                    "content-type":"appliction/json",
+                    "content-type":"application/json",
                 },
-                body:JSON.stringify({product_id:productid})
+                body:JSON.stringify({product_id:product.id})
             })
             fetchCart()
         }catch(error){
@@ -45,10 +45,10 @@ export const CartProvider = ({ children }) => {
     // Remove product from cart
     const removeFromCart =async (itemId) => {
         try{
-            await fetch(`${BASEURL}/api/cart/remove`,{
+            await fetch(`${BASEURL}/api/cart/remove/`,{
                  method:'POST',
                 headers:{
-                    "content-type":"appliction/json",
+                    "content-type":"application/json",
                 },
                 body:JSON.stringify({item_id:itemId})
             })
@@ -61,12 +61,13 @@ export const CartProvider = ({ children }) => {
     const updateQuantity=async (itemId,quantity)=>{
         if(quantity<1){
             await removeFromCart(itemId)
+            return
         }
         try{
             await fetch(`${BASEURL}/api/cart/update/`,{
                 method:'POST',
                  headers:{
-                    "content-type":"appliction/json",
+                    "content-type":"application/json",
                 },
                 body:JSON.stringify({item_id:itemId,quantity})
 
@@ -76,9 +77,13 @@ export const CartProvider = ({ children }) => {
             console.log('error updating cart', error)
         }
     }
+    const clearCart=()=>{
+        setCartItems([]),
+        setTotal(0);
+    }
 
     return (
-        <CartContext.Provider value={{ cartItems,total,addToCart, removeFromCart, updateQuantity }}>
+        <CartContext.Provider value={{ cartItems,total,addToCart, removeFromCart, updateQuantity,clearCart }}>
             {children}
         </CartContext.Provider>
     );
