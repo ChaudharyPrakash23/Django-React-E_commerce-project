@@ -1,4 +1,5 @@
 import { useCart } from "../context/CardContext";
+import { Link } from "react-router-dom";
 
 function CartPage() {
   const { cartItems, total, removeFromCart, updateQuantity } = useCart();
@@ -12,7 +13,10 @@ function CartPage() {
       ) : (
         <div className="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
           {cartItems.map((item) => (
-            <div key={item.id} className="flex items-center justify-between mb-4">
+            <div
+              key={item.id}
+              className="flex items-center justify-between mb-4"
+            >
               <div className="flex items-center gap-4 ">
                 {item.product_image && (
                   <img
@@ -52,6 +56,12 @@ function CartPage() {
           <div className="border-t pt-4 mt-4 flex justify-between items-center ">
             <h2 className="text-xl font-bold">Total:</h2>
             <p className="text-xl font-semibold">Rs:{total.toFixed(2)}</p>
+            <Link
+              to="/checkout"
+              className="bg-blue-600 text-white hover:bg-blue-700 p-2 rounded-md transition duratio-300"
+            >
+              Proceed to checkout
+            </Link>
           </div>
         </div>
       )}
