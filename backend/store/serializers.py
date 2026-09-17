@@ -54,7 +54,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields=['username','email','password','password2']
 
     def validate(self,data):
-        if data['password']!=['password2']:
+        if data['password']!=data['password2']:
             raise serializers.ValidationError("password doesnot match")
         return data
 

@@ -8,7 +8,7 @@ function ProductDetails() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const {addToCart}=useCart()
+  const { addToCart } = useCart();
 
   useEffect(() => {
     fetch(`${BASEURL}/api/products/${id}/`)
@@ -36,7 +36,13 @@ function ProductDetails() {
   if (!product) {
     return <div>No Product Found</div>;
   }
-
+  const handleAddToCart = () => {
+    if (!localStorage.getItem("access_token")) {
+      window.location.href = "/login";
+      return;
+    }
+    addToCart(product.id);
+  };
   return (
     <div className="min-h-screen bg-grey-100 flex justify-center items-center py-10">
       <div className="bg-white shadow-lg rounded-2xl p-8 max-w-3xl w-full">
@@ -54,12 +60,17 @@ function ProductDetails() {
             <p className="text-2xl font-semibold text-green-600 mb-6">
               {product.price}
             </p>
-            <button onClick={()=>addToCart(product)} className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 cursor-pointer transition">
+            <button
+              onClick={handleAddToCart}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 cursor-pointer transition"
+            >
               🛒Add to cart
             </button>
             {/* back to home button */}
             <div className="mt-4">
-              <a href="/" className="text-blue-600 hover:underline">⬅️back to home</a>
+              <a href="/" className="text-blue-600 hover:underline">
+                ⬅️back to home
+              </a>
             </div>
           </div>
         </div>
@@ -67,4 +78,4 @@ function ProductDetails() {
     </div>
   );
 }
-export default ProductDetails
+export default ProductDetails;
