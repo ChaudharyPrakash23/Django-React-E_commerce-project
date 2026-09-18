@@ -41,7 +41,7 @@ function ProductDetails() {
       window.location.href = "/login";
       return;
     }
-    addToCart(product.id);
+    addToCart(product);
   };
   return (
     <div className="min-h-screen bg-grey-100 flex justify-center items-center py-10">

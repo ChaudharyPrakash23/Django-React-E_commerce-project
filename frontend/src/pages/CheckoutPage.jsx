@@ -14,41 +14,51 @@ function Checkoutpage() {
     phone: "",
     payment_method: "COD",
   });
+
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
+    setForm((previousForm) => ({
+      ...previousForm,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
+
     try {
-      const res = await authFetch(`${BASEURL}/api/orders/create/`, {
+      const response = await authFetch(`${BASEURL}/api/orders/create/`, {
         method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
         body: JSON.stringify(form),
       });
-      const data = await res.json();
-      if (res.ok) {
-        setMessage("Order placed successfully");
-        fetch(`${BASEURL}/api/cart/`);
-        clearCart();
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
-      } else {
-        setMessage(data.error || "Failed to place order.Please try again ");
+
+      const data = await response.json();
+
+      if (response.status === 401) {
+        setMessage("Your session has expired. Please log in again.");
+        setTimeout(() => navigate("/login"), 1000);
+        return;
       }
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to place order");
+      }
+
+      clearCart();
+      setMessage("Order placed successfully!");
+
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     } catch (error) {
-      setMessage("An error has occured.Please try again");
+      console.error("Checkout error:", error);
+      setMessage(error.message || "An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,6 +77,7 @@ function Checkoutpage() {
             required
             className="w-full border rounded-lg p-2"
           />
+
           <textarea
             name="address"
             placeholder="Full Address"
@@ -75,6 +86,7 @@ function Checkoutpage() {
             required
             className="w-full border rounded-lg p-2"
           />
+
           <input
             type="tel"
             name="phone"
@@ -84,6 +96,7 @@ function Checkoutpage() {
             required
             className="w-full border rounded-lg p-2"
           />
+
           <select
             name="payment_method"
             value={form.payment_method}
@@ -93,13 +106,15 @@ function Checkoutpage() {
             <option value="COD">Cash on Delivery</option>
             <option value="PrabhuPay">Online payment</option>
           </select>
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300 disabled:opacity-50"
           >
-            {loading ? "Processing..." : "placeholder"}
+            {loading ? "Processing..." : "Place Order"}
           </button>
+
           {message && (
             <p className="text-center text-green-700 font-semibold mt-4">
               {message}
@@ -110,4 +125,5 @@ function Checkoutpage() {
     </div>
   );
 }
+
 export default Checkoutpage;

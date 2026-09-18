@@ -1,10 +1,11 @@
 from rest_framework.response import Response
 from .models import Category,Product,Cart,Cartitem,Order,OrderItem
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view,permission_classes,parser_classes
 from .serializers import ProductSerializer,CategorySerializer,CartSerializer,CartItemSerializer,RegisterSerializer,UserSerializer
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework import status
 from django.contrib.auth.models import User
+from rest_framework.parsers import JSONParser
 
 @api_view(['GET'])
 def get_products(request):
@@ -39,6 +40,8 @@ def get_cart(request):
 @permission_classes([IsAuthenticated])
 def add_to_cart(request):
     product_id = request.data.get('product_id')
+    if not product_id:
+        return Response({"error":"product Id is required"},status=400)
     product = Product.objects.get(id=product_id)
     cart, created = Cart.objects.get_or_create(user=request.user)
     item, created = Cartitem.objects.get_or_create(cart=cart, product=product)

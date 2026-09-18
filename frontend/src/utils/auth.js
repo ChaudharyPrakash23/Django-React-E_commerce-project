@@ -13,14 +13,23 @@ export const getAccessToken=()=>{
 
 }
 
-export const authFetch=(url,options={})=>{
-    const token=getAccessToken();
-    const headers=options.headers?{...options.headers}:{};
-    if(token) headers["Authorization"]=`Bearer ${token}`;
-    headers["Content-Type"]="application/json";
+export const authFetch = async (url, options = {}) => {
+    const token = getAccessToken();
 
-    return fetch(url,{
+    const headers = new Headers(options.headers || {});
+
+    if (options.body && !(options.body instanceof FormData)) {
+        headers.set("Content-Type", "application/json");
+    }
+
+    headers.set("Accept", "application/json");
+
+    if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    return fetch(url, {
         ...options,
         headers,
-    })
-}
+    });
+};
